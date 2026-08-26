@@ -1,0 +1,6 @@
+apache-airflow-providers-http
+apache-airflow-providers-postgres
+psycopg[binary]
+astronomer-cosmos
+pandas
+kagglehub[pandas-datasets]

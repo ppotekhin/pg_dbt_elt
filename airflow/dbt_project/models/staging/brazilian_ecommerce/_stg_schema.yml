@@ -1,0 +1,10 @@
+models:
+  - name: stg_customers
+  - name: stg_geolocation
+  - name: stg_order_items
+  - name: stg_order_payments
+  - name: stg_order_reviews
+  - name: stg_orders
+  - name: stg_product_category_name_translation
+  - name: stg_products
+  - name: stg_sellers

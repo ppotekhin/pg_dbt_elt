@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - ./postgres/.env
+    ports:
+      - 15432:5432
+    volumes:
+      - ./postgres/log:/etc/log
+      - ./postgres/init_dbs.sh:/docker-entrypoint-initdb.d/init_dbs.sh
+      - ./airflow/airflow_tmp:/tmp
+      - postgres_data:/var/lib/postgresql/data
+  airflow:
+    build:
+      context: ./airflow
+    env_file:
+      - ./airflow/.env
+    ports:
+      - 18080:8080
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/airflow_tmp:/tmp
+      # - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
+      - ./airflow/dbt_project:/opt/airflow/dbt_project
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data: {}

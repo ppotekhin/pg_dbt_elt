@@ -1,0 +1,1 @@
+{{ order_stage_fact('order_delivered_customer_timestamp') }}

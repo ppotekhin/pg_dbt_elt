@@ -1,0 +1,3 @@
+models:
+  - name: int_order_with_item
+    descrioption: Объедененная таблица заказов и товаров

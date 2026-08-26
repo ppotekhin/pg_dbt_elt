@@ -1,0 +1,23 @@
+name: 'pg_dbt_elt'
+version: '1.0.0'
+profile: 'pg_dbt_elt'
+model-paths: ["models"]
+macro-paths: ["macros"]
+# analysis-paths: ["analyses"]
+# test-paths: ["tests"]
+# seed-paths: ["seeds"]
+# snapshot-paths: ["snapshots"]
+# clean-targets:
+#   - "target"
+#   - "dbt_packages"
+models:
+  pg_dbt_elt:
+    staging:
+      +schema: staging
+      +materialized: view
+    intermediate:
+      +schema: intermediate
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table

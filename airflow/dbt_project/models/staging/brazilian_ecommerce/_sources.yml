@@ -1,0 +1,153 @@
+sources:
+  - name: raw
+    description: Слой необработанных данных
+    database: dwh
+    schema: raw
+    tables:
+      - name: olist_customers_dataset
+        description: >
+          This dataset has information about the customer and its location. Use it to identify unique customers in the orders dataset and to find the orders delivery location.
+          At our system each order is assigned to a unique customer_id. This means that the same customer will get different ids for different orders. The purpose of having a customer_unique_id on the dataset is to allow you to identify customers that made repurchases at the store. Otherwise you would find that each order had a different customer associated with.
+        columns:
+          - name: customer_id
+            description: key to the orders dataset. Each order has a unique customer_id.
+          - name: customer_unique_id
+            description: unique identifier of a customer.
+          - name: customer_zip_code_prefix
+            description: first five digits of customer zip code
+          - name: customer_city
+            description: customer city name
+          - name: customer_state
+            description: customer state
+      - name: olist_geolocation_dataset
+        description: >
+          This dataset has information Brazilian zip codes and its lat/lng coordinates. Use it to plot maps and find distances between sellers and customers.
+        columns:
+          - name: geolocation_zip_code_prefix
+            description: first 5 digits of zip code
+          - name: geolocation_lat
+            description: latitude
+          - name: geolocation_lng
+            description: longitude
+          - name: geolocation_city
+            description: city name
+          - name: geolocation_state
+            description: state
+      - name: olist_order_items_dataset
+        description: >
+          This dataset includes data about the items purchased within each order.
+          Example:
+          The order_id = 00143d0f86d6fbd9f9b38ab440ac16f5 has 3 items (same product). Each item has the freight calculated accordingly to its measures and weight. To get the total freight value for each order you just have to sum.
+          The total order_item value is: 21.33 * 3 = 63.99
+          The total freight value is: 15.10 * 3 = 45.30
+          The total order value (product + freight) is: 45.30 + 63.99 = 109.29
+        columns:
+          - name: order_id
+            description: order unique identifier
+          - name: order_item_id
+            description: sequential number identifying number of items included in the same order.
+          - name: product_id
+            description: product unique identifier
+          - name: seller_id
+            description: seller unique identifier
+          - name: shipping_limit_date
+            description: Shows the seller shipping limit date for handling the order over to the logistic partner.
+          - name: price
+            description: item price
+          - name: freight_value
+            description: item freight value item (if an order has more than one item the freight value is splitted between items)
+      - name: olist_order_payments_dataset
+        description: >
+          This dataset includes data about the orders payment options.
+        columns:
+          - name: order_id
+            description: unique identifier of an order.
+          - name: payment_sequential
+            description: a customer may pay an order with more than one payment method. If he does so, a sequence will be created to accommodate all payments.
+          - name: payment_type
+            description: method of payment chosen by the customer.
+          - name: payment_installments
+            description: number of installments chosen by the customer.
+          - name: payment_value
+            description: transaction value.
+      - name: olist_order_reviews_dataset
+        description: >
+          This dataset includes data about the reviews made by the customers.
+          After a customer purchases the product from Olist Store a seller gets notified to fulfill that order. Once the customer receives the product, or the estimated delivery date is due, the customer gets a satisfaction survey by email where he can give a note for the purchase experience and write down some comments.
+        columns:
+          - name: review_id
+            description: unique review identifier
+          - name: order_id
+            description: unique order identifier
+          - name: review_score
+            description: Note ranging from 1 to 5 given by the customer on a satisfaction survey.
+          - name: review_comment_title
+            description: Comment title from the review left by the customer, in Portuguese.
+          - name: review_comment_message
+            description: Comment message from the review left by the customer, in Portuguese.
+          - name: review_creation_date
+            description: Shows the date in which the satisfaction survey was sent to the customer.
+          - name: review_answer_timestamp
+            description: Shows satisfaction survey answer timestamp.
+      - name: olist_orders_dataset
+        description: >
+          This is the core dataset. From each order you might find all other information.
+        columns:
+          - name: order_id
+            description: unique identifier of the order.
+          - name: customer_id
+            description: key to the customer dataset. Each order has a unique customer_id.
+          - name: order_status
+            description: Reference to the order status (delivered, shipped, etc).
+          - name: order_purchase_timestamp
+            description: Shows the purchase timestamp.
+          - name: order_approved_at
+            description: Shows the payment approval timestamp.
+          - name: order_delivered_carrier_date
+            description: Shows the order posting timestamp. When it was handled to the logistic partner.
+          - name: order_delivered_customer_date
+            description: Shows the actual order delivery date to the customer.
+          - name: order_estimated_delivery_date
+            description: Shows the estimated delivery date that was informed to customer at the purchase moment.
+      - name: olist_products_dataset
+        description: This dataset includes data about the products sold by Olist.
+        columns:
+          - name: product_id
+            description: unique product identifier
+          - name: product_category_name
+            description: root category of product, in Portuguese.
+          - name: product_name_lenght
+            description: number of characters extracted from the product name.
+          - name: product_description_lenght
+            description: number of characters extracted from the product description.
+          - name: product_photos_qty
+            description: number of product published photos
+          - name: product_weight_g
+            description: product weight measured in grams.
+          - name: product_length_cm
+            description: product length measured in centimeters.
+          - name: product_height_cm
+            description: product height measured in centimeters.
+          - name: product_width_cm
+            description: product width measured in centimeters.
+      - name: olist_sellers_dataset
+        description: >
+          This dataset includes data about the sellers that fulfilled orders made at Olist. Use it to find the seller location and to identify which seller fulfilled each product.
+        columns:
+          - name: seller_id
+            description: seller unique identifier
+          - name: seller_zip_code_prefix
+            description: first 5 digits of seller zip code
+          - name: seller_city
+            description: seller city name
+          - name: seller_state
+            description: seller state
+      - name: product_category_name_translation
+        description: >
+          Translates the product_category_name to english.
+        columns:
+          - name: product_category_name
+            description: category name in Portuguese
+          - name: product_category_name_english
+            description: category name in English
+

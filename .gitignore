@@ -1,0 +1,6 @@
+.env
+.venv
+logs
+log
+__pycache__
+airflow/airflow_tmp/*

@@ -36,7 +36,7 @@
 │   │   │   └── marts/            # Финальные витрины данных (Схема звезда)
 │   │   └── dbt_project.yml       # Конфигурация dbt проекта
 │   └── Dockerfile                # Сборка Airflow 3 образа с venv для dbt
-└── docker-compose.yml        # Инфраструктура (Airflow Web, Scheduler, Init, Postgres Meta)
+└── docker-compose.yml            # Инфраструктура (Airflow Web, Scheduler, Init, Postgres Meta)
 ```
 
 ---
@@ -44,7 +44,7 @@
 ## 🛠 Как запустить проект локально
 
 ### 1. Подготовка окружения
-Клонируйте репозиторий и создайте в `/airflow` файлы конфигураций.
+Клонируйте репозиторий и создайте в `/airflow` файл конфигурации.
 
 ### 2. Запуск инфраструктуры
 Соберите кастомный образ Airflow 3 и поднимите контейнеры (Postgres в качестве бэкенда инициализируется автоматически):
@@ -52,7 +52,7 @@
 docker compose up -d --build
 ```
 
-### 3. Настройка подключений в Airflow Web UI (localhost:8080)
+### 3. Настройка подключений в Airflow Web UI (localhost:18080)
 *   **Admin -> Connections -> `dwh`** (Тип: `Postgres`, Host: `db`, Port: `5432`)
 
 ### 4. Запуск

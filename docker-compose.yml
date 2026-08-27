@@ -24,8 +24,7 @@ services:
       # - ./airflow/airflow.cfg:/opt/airflow/airflow.cfg
       - ./airflow/dbt_project:/opt/airflow/dbt_project
     depends_on:
-      db:
-        condition: service_healthy
+      - db
 
 volumes:
   postgres_data: {}

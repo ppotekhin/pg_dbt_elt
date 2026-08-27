@@ -7,38 +7,38 @@ from generic_tasks import (
 )
 from cosmos import DbtTaskGroup, ProjectConfig, ProfileConfig, ExecutionConfig, RenderConfig
 from cosmos.profiles import PostgresUserPasswordProfileMapping
-from resources import BrazilianEcommerceKaggleDataset
+from resources import table_info_by_source, DataSource
 from settings import KAGGLE_DATASET_DIR, DBT_PROJECT_PATH, Connections
 
 
-@dag
+@dag(
+	schedule=None,
+	catchup=False
+)
 def kaggle_dag():
 
 	@task_group
 	def extract_and_load():
 
-		prepare_local_dir_task = prepare_local_dir(KAGGLE_DATASET_DIR)
+		prepared_local_dir: str = prepare_local_dir(KAGGLE_DATASET_DIR)
 
-		for kaggle_file in BrazilianEcommerceKaggleDataset.filepaths:
+		for table_name in table_info_by_source[DataSource.KAGGLE].keys():
 
-			@task_group(group_id=f'load_{kaggle_file.dataset_name}')
-			def load_kaggle_file():
+			@task_group(group_id=f'load_{table_name}')
+			def load_kaggle_file(local_dir: str):
 
-				load_to_csv_task = load_kaggle_dataset_to_csv.override(task_id=f'load_local_{kaggle_file.dataset_name}')(
-					BrazilianEcommerceKaggleDataset.dataset,
-					kaggle_file.filepath,
-					path.join(KAGGLE_DATASET_DIR,kaggle_file.filepath)
+				csv_filepath = load_kaggle_dataset_to_csv.override(task_id=f'load_local_{table_name}')(
+					table_name,
+					local_dir
 				)
-				load_from_csv_to_dwh.override(task_id=f'load_dwh_{kaggle_file.dataset_name}')(
-					csv_filepath=load_to_csv_task,
+				load_from_csv_to_dwh.override(task_id=f'load_dwh_{table_name}')(
+					csv_filepath=csv_filepath,
 					postgres_conn_id=Connections.DWH,
-					table_name=kaggle_file.dataset_name,
-					unique_keys=kaggle_file.unique_keys,
-					preoperator_path=kaggle_file.preoperator_path,
-					schema=kaggle_file.schema
+					data_source=DataSource.KAGGLE,
+					table_name=table_name
 				)
 
-			prepare_local_dir_task >> load_kaggle_file()
+			load_kaggle_file(prepared_local_dir)
 
 	dbt_transformations = DbtTaskGroup(
 		group_id='dbt_transformations',
